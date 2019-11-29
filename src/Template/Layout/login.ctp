@@ -1,3 +1,7 @@
+<?php
+    # Clase que nos ayuda a crear URLs.
+    use Cake\Routing\Router;
+?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -28,7 +32,7 @@
 
     </head>
     <body class="hold-transition login-page">
-        <div class="bkg-img" style="position: absolute; width: 100%; height: 100%; opacity: 0.3; background-image: url(http://localhost/web-reportes/web-reportes/img/bkg_login);">
+        <div class="bkg-img" style="position: absolute; width: 100%; height: 100%; opacity: 0.3; background-image: url(<?= Router::url('/',true) ?>img/bkg_login.jpg);">
         </div>
         <div class="login-box">
             <div class="login-logo">

@@ -51,7 +51,7 @@
             <aside class="main-sidebar elevation-4 sidebar-light-info">
                 <!-- Brand Logo -->
                 <a href="javascript:;" class="brand-link navbar-light">
-                    <?= $this->Html->image('logo2', ['class' => 'brand-image', 'alt' => 'Logo Sitio']) ?>
+                    <?= $this->Html->image('logo2.png', ['class' => 'brand-image', 'alt' => 'Logo Sitio']) ?>
                 <span class="brand-text font-weight-light">a</span>
                 </a>
 
@@ -60,7 +60,7 @@
                     <!-- Sidebar user (optional) -->
                     <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                         <div class="image">
-                            <?= $this->Html->image('gato_juanito', ['class' => 'img-circle elevation-2', 'alt' => 'User Image']) ?>
+                            <?= $this->Html->image('gato_juanito.jpg', ['class' => 'img-circle elevation-2', 'alt' => 'User Image']) ?>
                         </div>
                         <div class="info">
                             <a href="#" class="d-block">Admin</a>
