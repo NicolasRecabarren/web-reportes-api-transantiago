@@ -47,6 +47,7 @@ class AppController extends Controller
         $this->loadComponent('Flash');
 
         $this->loadComponent('Auth', [
+            'authError' => 'No estás autorizado para acceder a esta página.',
             'loginRedirect' => [
                 'controller' => 'Pages',
                 'action' => 'dashboard'
@@ -56,6 +57,8 @@ class AppController extends Controller
                 'action' => 'login'
             ]
         ]);
+
+        $this->set('pageTitle', ucwords($this->request->getParam('action')));
 
         /*
          * Enable the following component for recommended CakePHP security settings.
