@@ -20,6 +20,7 @@ use Cake\Http\Exception\NotFoundException;
 use Cake\View\Exception\MissingTemplateException;
 
 use Cake\Http\Client;
+use Cake\Utility\Hash;
 
 /**
  * Static content controller
@@ -41,6 +42,74 @@ class PagesController extends AppController
 
     public function reportes(){
 
+    }
+
+    public function getMediciones(){
+        $this->viewBuilder()->setLayout(false);
+        $httpClient = new Client();
+
+        $response = $httpClient->get('http://34.70.121.7:8080/');
+        $medidas = $response->getJson();
+
+        if($this->request->is('post')){
+            $nroRecorrido = $this->request->getData('nroRecorrido');
+            $tipoReporte  = $this->request->getData('tipoReporte');
+            $fecha        = $this->request->getData('fecha');
+            $horaDesde    = $this->request->getData('horaDesde');
+            $horaHasta    = $this->request->getData('horaHasta');
+
+            $mediciones = Hash::extract($medidas,'{s}[recorrido='.$nroRecorrido.']');
+            switch($tipoReporte){
+                case "diario" : $dataGrafico = $this->getReporteHoras(  $mediciones,$fecha,$horaDesde,$horaHasta); break;
+                case "semanal": $dataGrafico = $this->getReporteSemanal($mediciones,$fecha,$horaDesde,$horaHasta); break;
+                case "mensual": $dataGrafico = $this->getReporteMensual($mediciones,$fecha,$horaDesde,$horaHasta); break;
+            }
+
+            $this->set(compact('dataGrafico'));
+        }
+    }
+
+    protected function getReporteHoras($mediciones,$fecha,$horaDesde,$horaHasta){
+        $dataGrafico = [];
+
+        $desde = 0; $hasta = 23;
+        if(!empty($horaDesde)){ $desde = (int)$horaDesde; }
+        if(!empty($horaHasta)){ $hasta = (int)$horaHasta; }
+
+        for( $i = $desde; $i <= $hasta; $i++ ){
+            $hora = $i;
+            if($hora < 10){
+                $hora = '0'.$hora;
+            }
+
+            $dataGrafico["$hora:00"] = 0;
+        }
+
+        list($diaFechaFiltrada, $mesFechaFiltrada, $anioFechaFiltrada) = explode('/',$fecha);
+
+        foreach($mediciones as $medicion){
+
+            if(!empty($fecha) && strpos($medicion['fecha'],"$anioFechaFiltrada-$mesFechaFiltrada-$diaFechaFiltrada") === false){
+                continue;
+            }
+
+            $hora = substr($medicion['fecha'],11,2) + 1;
+            if(strlen($hora) == 1){
+                $hora = str_pad($hora,2,'0',STR_PAD_LEFT);
+            }
+
+            if($hora > 23 || !isset($dataGrafico["$hora:00"])){
+                continue;
+            }
+
+            $dataGrafico["$hora:00"] += $medicion['cant_personas'];
+        }
+
+        return [
+            'label' => 'Cantidad de Personas Detectadas Por Hora',
+            'labels'=> array_keys($dataGrafico),
+            'datos' => $dataGrafico
+        ];
     }
 
 }

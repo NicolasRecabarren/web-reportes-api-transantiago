@@ -1,3 +1,6 @@
+<?php
+    $this->assign('title', 'Dashboard');
+?>
 <div class="row">
     <div class="col-lg-3 col-6">
         <!-- small box -->
