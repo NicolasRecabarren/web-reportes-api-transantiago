@@ -31,18 +31,20 @@
                     </select>
                 </div>
             </div>
+            <!-- FECHA MONITORIZADA -->
             <div class="col-sm-2">
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
                         <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
                     </div>
-                    <input type="text" name="fecha" class="form-control" placeholder="Fecha monitorizada">
+                    <input type="text" name="fecha" class="form-control datepicker" readonly="readonly" placeholder="Fecha monitorizada" style="cursor: pointer; background-color: #FFF;">
                 </div>
             </div>
+            <!-- HORA DESDE -->
             <div class="col-sm-2">
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                        <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                        <span class="input-group-text"><i class="far fa-clock"></i></span>
                     </div>
                     <select name="hora_desde" id="" style="min-height: 38px;">
                         <option value="">Hora desde</option>
@@ -57,10 +59,11 @@
                     </select>
                 </div>
             </div>
+            <!-- HORA HASTA -->
             <div class="col-sm-2">
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                        <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                        <span class="input-group-text"><i class="far fa-clock"></i></span>
                     </div>
                     <select name="hora_hasta" id="" style="min-height: 38px;">
                         <option value="">Hora hasta</option>
@@ -92,54 +95,53 @@
         </div>
     </div>
 </div>
+<?= $this->Html->css('/js/plugins/bootstrap-datepicker/css/bootstrap-datepicker.min.css') ?>
 
 <?= $this->Html->script('/js/plugins/chart.js/Chart.min.js') ?>
 <?= $this->Html->script('/js/plugins/inputmask/min/jquery.inputmask.bundle.min.js') ?>
+<?= $this->Html->script('/js/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js') ?>
+<script src="https://unpkg.com/bootstrap-datepicker@1.9.0/dist/locales/bootstrap-datepicker.es.min.js" charset="UTF-8"></script>
 
 <script type="text/javascript">
     $(document).ready(function(){
         var records = [];
 
-        //$('input[name="fecha"]').inputmask('dd/mm/yyyy');
+        $('input[name="fecha"]').datepicker({
+            format  : "dd/mm/yyyy",
+            language: "es",
+            endDate : new Date(),
+            autoclose: true
+        });
 
         $('body').on('click', '#BtnBuscar', function() {
             getMediciones();
         });
 
         $('body').on('change','select[name="tipo_reporte"]', function() {
+            $('input[name="fecha"]').val("");
+            $('input[name="fecha"]').datepicker('destroy');
+            let properties = {
+                language   : "es",
+                endDate    : new Date(),
+                autoclose  : true
+            };
+
             if( $(this).val() == "semanal" || $(this).val() == "mensual" ){
                 $('select[name="hora_desde"]').val("").parents('.col-sm-2').addClass('hide');
                 $('select[name="hora_hasta"]').val("").parents('.col-sm-2').addClass('hide');
+
+                properties.minViewMode = 1;
+                properties.format      = "mm/yyyy";
+
             } else {
                 $('select[name="hora_desde"]').parents('.col-sm-2').removeClass('hide');
                 $('select[name="hora_hasta"]').parents('.col-sm-2').removeClass('hide');
+
+                properties.minViewMode = 0;
+                properties.format      = "dd/mm/yyyy";
             }
+            $('input[name="fecha"]').datepicker(properties);
         });
-
-        //getRecords();
-
-        function getRecords(nroRecorrido, fechaDesde, fechaHasta){
-            $.ajax({
-                type: "GET",
-                url : 'http://34.70.121.7:8080/',
-                data: {},
-                beforeSend: function() {
-
-                },
-                success: function(response) {
-                    $.each(response, function(oName, oValue) {
-
-                        if(nroRecorrido != null && oValue.recorrido == nroRecorrido){
-                            records.push(oValue);
-                        }
-
-                    });
-                },
-                error: function() {
-
-                }
-            });
-        }
 
         function getMediciones() {
             let error     = 0;
@@ -151,7 +153,8 @@
             let horaDesde    = $('select[name="hora_desde"]').val();
             let horaHasta    = $('select[name="hora_hasta"]').val();
 
-            if(nroRecorrido == ""){
+            // Validamos el número de recorrido
+            if(nroRecorrido == "" || nroRecorrido < 101){
                 if(!$('input[name="nro_recorrido"]').hasClass('is-invalid')){
                     $('input[name="nro_recorrido"]').addClass('is-invalid');
                 }
@@ -160,6 +163,7 @@
                 $('input[name="nro_recorrido"]').removeClass('is-invalid');
             }
 
+            // Validamos el tipo de reporte
             if( tipoReporte == "diario" && (fecha == "" || fecha.length == 0)){
                 if(!$('input[name="fecha"]').hasClass('is-invalid')){
                     $('input[name="fecha"]').addClass('is-invalid');
@@ -169,6 +173,15 @@
                 $('input[name="fecha"]').removeClass('is-invalid');
             }
 
+            // Validamos hora desde y hasta
+            if( horaDesde != "" && horaHasta != "" && horaDesde > horaHasta){
+                if(!$('select[name="hora_hasta"]').hasClass('is-invalid')){
+                    $('select[name="hora_hasta"]').addClass('is-invalid');
+                }
+                error++;
+            } else {
+                $('select[name="hora_hasta"]').removeClass('is-invalid');
+            }
 
             if(error > 0)
                 return false;
@@ -191,13 +204,6 @@
                 },
                 success: function(response) {
                     $('#ResultadoReporte').html(response);
-                    /*$.each(response, function(oName, oValue) {
-
-                        if(nroRecorrido != null && oValue.recorrido == nroRecorrido){
-                            records.push(oValue);
-                        }
-
-                    });*/
                 },
                 error: function() {
 

@@ -21,6 +21,7 @@ use Cake\View\Exception\MissingTemplateException;
 
 use Cake\Http\Client;
 use Cake\Utility\Hash;
+use Cake\I18n\Time;
 
 /**
  * Static content controller
@@ -62,7 +63,7 @@ class PagesController extends AppController
             switch($tipoReporte){
                 case "diario" : $dataGrafico = $this->getReporteHoras(  $mediciones,$fecha,$horaDesde,$horaHasta); break;
                 case "semanal": $dataGrafico = $this->getReporteSemanal($mediciones,$fecha,$horaDesde,$horaHasta); break;
-                case "mensual": $dataGrafico = $this->getReporteMensual($mediciones,$fecha,$horaDesde,$horaHasta); break;
+                case "mensual": $dataGrafico = $this->getReporteMensual($mediciones,$fecha); break;
             }
 
             $this->set(compact('dataGrafico'));
@@ -107,6 +108,34 @@ class PagesController extends AppController
 
         return [
             'label' => 'Cantidad de Personas Detectadas Por Hora',
+            'labels'=> array_keys($dataGrafico),
+            'datos' => $dataGrafico
+        ];
+    }
+
+    protected function getReporteMensual($mediciones,$fecha) {
+        list($mesFiltrado,$anioFiltrado) = explode('/',$fecha);
+
+        $diaInicio = 1;
+        $diaTermino = (new Time("$anioFiltrado-$mesFiltrado-01"))->modify('last day of this month')->format('d');
+
+        for( $i = $diaInicio; $i <= $diaTermino; $i++ ){
+            $dia = str_pad($i,2,'0',STR_PAD_LEFT);
+            $dataGrafico[$dia] = 0;
+        }
+
+        foreach($mediciones as $medicion){
+
+            if(!empty($fecha) && strpos($medicion['fecha'],"$anioFiltrado-$mesFiltrado") === false){
+                continue;
+            }
+
+            $dia = str_pad(substr($medicion['fecha'],8,2),2,'0',STR_PAD_LEFT);
+            $dataGrafico[$dia] += $medicion['cant_personas'];
+        }
+
+        return [
+            'label' => 'Cantidad de Personas Detectadas Por Día',
             'labels'=> array_keys($dataGrafico),
             'datos' => $dataGrafico
         ];
