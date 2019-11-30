@@ -71,18 +71,18 @@
                     <nav class="mt-2">
                         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 
-                        <li class="nav-item">
-                            <?= $this->Html->link('<i class="nav-icon fas fa-tachometer-alt"></i> <p>Dashboard</p>',['controller' => 'Pages', 'action' => 'dashboard'],[
-                                        'class'  => 'nav-link',
-                                        'escape' => false
-                            ]) ?>
-                        </li>
-                        <li class="nav-item">
-                            <?= $this->Html->link('<i class="nav-icon fas fa-chart-bar"></i> <p>Reportes</p>',['controller' => 'Pages', 'action' => 'reportes'],[
-                                        'class'  => 'nav-link',
-                                        'escape' => false
-                            ]) ?>
-                        </li>
+                            <li class="nav-item">
+                                <?= $this->Html->link('<i class="nav-icon fas fa-tachometer-alt"></i> <p>Dashboard</p>',['controller' => 'Pages', 'action' => 'dashboard'],[
+                                            'class'  => 'nav-link',
+                                            'escape' => false
+                                ]) ?>
+                            </li>
+                            <li class="nav-item">
+                                <?= $this->Html->link('<i class="nav-icon fas fa-chart-bar"></i> <p>Reportes</p>',['controller' => 'Pages', 'action' => 'reportes'],[
+                                            'class'  => 'nav-link',
+                                            'escape' => false
+                                ]) ?>
+                            </li>
 
                         </ul>
                     </nav>

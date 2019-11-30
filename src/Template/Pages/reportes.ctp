@@ -26,7 +26,7 @@
                 <div class="form-group mb-3">
                     <select name="tipo_reporte" class="custom-select">
                         <option value="diario">Reporte diario</option>
-                        <option value="semanal">Reporte semanal</option>
+                        <!--<option value="semanal">Reporte semanal</option>-->
                         <option value="mensual">Reporte mensual</option>
                     </select>
                 </div>

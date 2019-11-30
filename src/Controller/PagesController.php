@@ -38,7 +38,11 @@ class PagesController extends AppController
         $httpClient = new Client();
 
         $response = $httpClient->get('http://34.70.121.7:8080/');
-        $this->set('cantTomadas',count($response->getJson()));
+        $mediciones = $response->getJson();
+
+        $this->set('cantTomadas', count($mediciones));
+        $this->set('cantBuses'  , count(Hash::combine($mediciones,'{s}.recorrido','{s}.recorrido')));
+        $this->set('mediciones' , $mediciones);
     }
 
     public function reportes(){
