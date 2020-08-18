@@ -1,3 +1,18 @@
+# Web Reportes
+
+- El objetivo principal de este proyecto es generar reportes de la cantidad de personas detectadas a distintas horas, posiciones y recorridos de los buses del transporte público.
+- Dicha información es obtenida a través de una API la cuál fue alimentada mediante tecnologías automatizadas de conteo de personas en imagenes.
+- Los reportes tienen como objetivo mostrar al usuario la información necesaria a través de data grids y gráficos para que tomen decisiones logísticas más eficientes, tales como cuándo enviar o suplir de más buses a ciertos recorridos, como también saber cuáles son los puntos más críticos en donde la afluencia de personas es mayor.
+
+# Tecnologías Utilizadas
+- PHP versión 7
+- Framework CakePHP 3.x
+- Javascript y jQuery
+- Bootstrap 4
+- Chart.js
+- CSS
+- Template AdminLTE
+
 # CakePHP Application Skeleton
 
 [![Build Status](https://img.shields.io/travis/cakephp/app/master.svg?style=flat-square)](https://travis-ci.org/cakephp/app)
